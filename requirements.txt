@@ -1,0 +1,8 @@
+python=2.7.13
+Django=1.11.16
+pymysql=0.9.2
+
+测试环境链接的数据库：172.16.1.42  com.config.service.mysql[1]
+
+启动时需要将测试数据库进行更改：10.10.4.5 com.config.service.mysql[0]
+

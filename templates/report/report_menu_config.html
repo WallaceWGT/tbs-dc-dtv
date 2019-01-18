@@ -1,0 +1,47 @@
+{% extends 'public/base.html' %}
+
+
+{% block page-content %}
+
+    <style>
+        .menu_label{
+            line-height: 34px;
+            margin-bottom: 0;
+        }
+    </style>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <div class="title-body">
+
+                    <div class="panel panel-default">
+
+                        <form action="" method="post">
+                            <div class="panel panel-body">
+                                <div class="row">
+
+                                    <label class="col-sm-1 control-label menu_label">{{ menu_form.menu_name.label }}</label>
+                                    <div class="col-sm-2">
+                                        {{ menu_form.menu_name }}{{ menu_form.menu_name.errors.0 }}
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div id="create-div">
+                                <button type="submit" class="btn btn-info" style="float: right">保存</button>
+                                <i class="btn btn-success increase_index" style="float: right; margin-right: 20px">取消编辑</i>
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

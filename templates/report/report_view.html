@@ -1,0 +1,524 @@
+{% extends "public/base.html" %}
+
+{% block page-title %}
+     <div class="app-title">
+         <div>
+             <h1><a class="fa fa-gear block-config" href="/visual/report_block_config/">编辑报表</a></h1>
+         </div>
+         <ul class="app-breadcrumb breadcrumb">
+             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+             <li class="breadcrumb-item"><a href="#">返回</a></li>
+         </ul>
+     </div>
+{% endblock %}
+
+{% block page-content %}
+    <link rel="stylesheet" href="../../static/report/plugin/layui/css/layui.mobile.css">
+    <link rel="stylesheet" href="../../static/report/plugin/layui/css/layui.css">
+    <style>
+        .panel{
+            margin-bottom: 5px;
+        }
+        .content-row .row{
+            margin-bottom: 2px;
+        }
+        hr{
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+        .chart-explain{
+            background-color: rgba(143, 143, 143, 0.2);
+            margin: 0;
+        }
+        .tile{
+            margin-bottom: 3px;
+        }
+        .chart-type{
+            font-size: 10px;
+
+        }
+        #data-block{
+            text-align: center;
+            margin: 0 auto;
+        }
+        #data-block div{
+            margin: 20px;
+            box-shadow:5px 0 25px rgba(94, 192, 150, 0.5);
+            width: 22%;
+            height: 130px;
+            display: inline-block;
+            background-color: #5ec096;
+            border-radius: 5px;
+        }
+        #data-block div .field-title{
+            font-size: 19px;
+            margin-top: 3px;
+        }
+        #data-block div .field-data{
+            margin-top: 38px;
+            font-size: 25px;
+        }
+        .chart-block .main div{
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+    </style>
+    <div class="row">
+
+        <div class="col-md-10">
+
+            {% for block_ele in block_objs %}
+                {% if block_ele.block_type == 0 %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="tile chart-block">
+                                <div>
+                                    <span name="bid" bid="{{ block_ele.bid }}" block_type="{{ block_ele.block_type }}"></span>
+                                    <span class="data-title">{{ block_ele.block_name }}</span>
+                                    <input type="text" class="date-filter" style="position: relative; left: 78%; width: 83px; border-radius: 5px; border-color:#e3effb;  background-color: rgba(227,239,251,0.35); color: rgba(24,144,255,0.62); font-size: 14px; padding: 5px; height: 25px; border: none">
+                                    <i class="fa fa-calendar" style="position: relative; left: 76%; opacity: 0.4"></i>
+                                </div>
+                                <hr>
+                                <div class="main" style="width: 100%;height:400%; position: relative"></div>
+                            </div>
+                        </div>
+                    </div>
+                {% elif block_ele.block_type == 1 %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="tile table-block">
+                                <div>
+                                    <span name="bid" bid="{{ block_ele.bid }}" block_type="{{ block_ele.block_type }}"></span>
+                                    <span class="data-title">{{ block_ele.block_name }}</span>
+                                </div>
+                                <hr>
+                                <div class="table-block">
+                                    <table class="layui-table my-table"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% elif block_ele.block_type == 2 %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="tile text-block">
+                                <div>
+                                    <span name="bid" bid="{{ block_ele.bid }}" block_type="{{ block_ele.block_type }}"></span>
+                                    <span class="data-title">{{ block_ele.block_name }}</span>
+                                </div>
+                                <hr>
+                                <div>{{ block_ele.block_content }}</div>
+                            </div>
+                        </div>
+                    </div>
+                {% elif block_ele.block_type == 3 %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="tile data-block">
+                                 <div>
+                                    <span name="bid" bid="{{ block_ele.bid }}" block_type="{{ block_ele.block_type }}"></span>
+                                    <span class="data-title">{{ block_ele.block_name }}</span>
+                                 </div>
+                                <hr>
+                                <div id="data-block">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else%}
+                {% endif %}
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+    <script src="../../static/public/plugins/common/jquery.min.js"></script>
+    <script src="../../static/report/plugin/laydate/laydate.js"></script>
+    <script src="../../static/report/plugin/layui/layui.all.js"></script>
+    <script>
+
+        $(function () {
+            block_data_ini()
+        });
+        function get_url_param(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r !== null) {
+                return unescape(r[2])
+            }
+        }
+
+        var vid = get_url_param('vid');
+        // 加载每一块的数据
+        function block_data_ini() {
+            var block_ids = $('[name=bid]');
+            $.each(block_ids, function (i, bid_ele) {
+                if ($(bid_ele).attr("block_type") === '2'){
+                    return true
+                }
+                var bid = $(bid_ele).attr("bid");
+                $.ajax({
+                    url:"/visual/report_view/",
+                    method:"GET",
+                    data:{'vid':vid, 'bid':bid, 'init': true, 'query':false},
+                    success:function (arg) {
+                        var response_data = JSON.parse(arg);
+                        if (response_data['code'] === 0){
+                            switch (response_data['data']['block_type']) {
+                                case 0:
+                                    console.log(response_data['data']);
+                                    chart_init(response_data['data'], bid_ele);
+                                    break;
+                                case 1:
+                                    table_init(response_data['data'], bid_ele);
+                                    break;
+                                case 3:
+                                    data_block_init(response_data['data'], bid_ele);
+                                    break;
+                            }
+                        }else {
+                            console.log('asfda')
+                        }
+                    }
+                })
+            })
+        }
+
+        // 图表数据初始化
+
+        // 定义一个空的图表对象列表，用于后续的图像大小自适应
+        var chart_resize=[];
+        function chart_init(data, html_ele) {
+            var chart_block_data = {};
+            chart_block_data['field_name_cn'] = data['columns_cn'];
+            chart_block_data['field_name'] = data['columns'];
+            chart_block_data['data'] = data['field_data'];
+            chart_block_data['type'] = data['chart_type'];
+            chart_block_data['title'] = $(html_ele).next().text();
+            var deal_chart_data = chart_data_format(chart_block_data);
+            var show_chart = echarts.init($(html_ele).parent().nextAll('.main')[0]);
+            show_chart.setOption((chart_config(deal_chart_data)));
+            chart_resize.push(show_chart);
+
+
+            date_time_filter(chart_block_data['type'],$(html_ele).nextAll('.date-filter')[0])
+        }
+        // 表格数据初始化
+        function table_init(data, html_ele) {
+            var col = [];
+            var table_data = [];
+            $.each(data['columns_cn'], function (i, x) {
+                var single_col = {'field': data['columns'][i], 'title': x, "sort": null};
+                col.push(single_col);
+
+            });
+
+            $.each(data['field_data'], function (j, single_data) {
+                var single_table_data = {};
+                $.each(single_data, function (g, data_field) {
+                    single_table_data[data['columns'][g]] = data_field
+                });
+                table_data.push(single_table_data)
+            });
+            layui.use('table', function () {
+                var table = layui.table;
+                //展示已知数据
+                table.render({
+                    elem: $(html_ele).parent().nextAll('.table-block').find('.my-table')[0]
+                    ,cols: [col]
+                    ,data: table_data
+                    //,skin: 'line' //表格风格
+                    ,even: true
+                    ,page: true //是否显示分页
+                    //,limits: [5, 7, 10]
+                    ,limit: 5 //每页默认显示的数量
+                  });
+            })
+        }
+        // 数据块数据初始化
+        function data_block_init(data, html_ele) {
+            $.each(data['columns_cn'], function (i, x) {
+
+                var single_block_html = "<div>"+
+                                            "<p class=\"field-data\">"+data['field_data'][0][i]+"</p>"+
+                                            "<p class=\"field-title\">"+x+"</h4>"+
+                                        "</div>";
+                $('#data-block').append(single_block_html)
+            });
+        }
+        // 根据数据获取对应图表类型的series
+        function chart_data_format(chart_data) {
+            /*
+            * 功能：根据需要的图表形式, 将后端传送过来的数据结构进行解析，使数据格式符合图表的数据格式
+            * chart_data: 后端数据格式{'type':1, 'title':[], data:[[1,], [2,], [3,]]}
+            * type:表示图表样式,
+            * title: 表示的是查询字段的标题一般来说
+            * data:数据库查询的数据(一般为二维数组)
+            * */
+
+            var option;
+
+            // 折线图
+            function line_chart(chart_data) {
+                var option;
+                var option_title_text = chart_data['title'];
+                var option_xAxis_data = [];
+                var option_series = [];
+                var option_legend={'data':[]};
+                $.each(chart_data['field_name_cn'], function (i, x) {
+                    var single_series = {'type':'line', 'data':[], 'name':x};
+                    $.each(chart_data['data'], function (j, y) {
+                        if($.inArray(y[0], option_xAxis_data)!==-1){
+                        }else {
+                            option_xAxis_data.push(y[0]);
+                        }
+
+                       if(i===0){
+                           return false
+                       }else {
+                           single_series['data'].push(y[i])
+                       }
+                    });
+                    if(i===0){
+                        return true
+                    }else {
+                        option_legend['data'].push(x);
+                        option_series.push(single_series)
+                    }
+
+                });
+                option={
+                    'title':{
+                        'text':''
+                    },
+                    'legend':option_legend,
+                    'xAxis': {
+                        'data':option_xAxis_data
+                    },
+                    'series':option_series
+                };
+                return option
+            }
+
+            // 柱形图
+            function bar_chart(chart_data) {
+                var option;
+                var option_title_text = chart_data['title'];
+                var option_xAxis_data = [];
+                var option_series = [];
+                $.each(chart_data['field_name_cn'], function (i, x) {
+                    var single_series = {'type':'bar', 'name':x, 'data':[]};
+                    $.each(chart_data['data'], function (j, y) {
+                       option_xAxis_data.push(y[0]);
+                       if(i===0){
+                           return false
+                       }else {
+                           single_series['data'].push(y[i])
+                       }
+                    });
+                    if(i===0){
+                        return true
+                    }else {
+                        option_series.push(single_series)
+                    }
+                });
+                option={
+                    'title':{
+                        'text':option_title_text
+                    } ,
+                    'xAxis': {
+                        'data':option_xAxis_data
+                    },
+                    'series':option_series
+                };
+                return option
+
+            }
+
+            // 雷达图
+            function radar_chart(chart_data) {
+                var option;
+                var option_title_text = chart_data['title'];
+                var option_xAxis_data = [];
+                var option_series = [];
+                $.each(chart_data['field_name_cn'], function (i, x) {
+                    var single_series = {'type':'radar', 'name': x, 'data':[]};
+                    $.each(chart_data['data'], function (j, y) {
+                       option_xAxis_data.push(y[0]);
+                       if(i===0){
+                           return false
+                       }else {
+                           single_series['data'].push(y[i])
+                       }
+                    });
+                    if(i===0){
+                        return true
+                    }
+                    option_series.push(single_series)
+                });
+                option={
+                    'title':{
+                        'text':option_title_text
+                    } ,
+                    'xAxis': {
+                        'data':option_xAxis_data
+                    },
+                    'series':{
+                        'type':'radar',
+                        'data':option_series
+                    }
+                };
+                return option
+            }
+
+            // 饼图
+            function pie_chart(chart_data) {
+                var option;
+                var option_title_text = chart_data['title'];
+                var option_legend_data = [];
+                var option_series = [{
+                    'name':chart_data['title'],
+                    'type':'pie',
+                    'radius':'55%',
+                    'center':['50%', '60%'],
+                    'data':[]
+                }];
+                $.each(chart_data['field_name_cn'], function (i, x) {
+                    var single_series = {'name':x, 'value':null};
+                    single_series['value']=chart_data['data'][0][i];
+                    option_series[0]['data'].push(single_series);
+                    option_legend_data.push(x);
+                });
+                console.log(option_series);
+                option= {
+                    'title':{
+                        'text':''
+                    } ,
+                    'legend': {
+                        'data':option_legend_data
+                    },
+                    'series':option_series
+                };
+
+                console.log(option);
+                return option
+            }
+
+            // 漏斗图
+            function funnel_chart(chart_data) {
+                var option;
+                var option_title_text = chart_data['title'];
+                var option_legend_data = [];
+                 var option_series = [{
+                    'name':chart_data['title'],
+                    'type':'funnel',
+                    'data':[]
+                }];
+                $.each(chart_data['field_name_cn'], function (i, x) {
+                    var single_series = {'name':x, 'value':null};
+                    single_series['value']=chart_data['data'][0][i];
+                    option_series[0]['data'].push(single_series)
+                });
+                option={
+                    'title':{
+                        'text':option_title_text
+                    } ,
+                    'legend': {
+                        'data':option_legend_data
+                    },
+                    'series':option_series
+                };
+                return option
+            }
+
+            switch (chart_data['type']) {
+                case 1:
+                    option = line_chart(chart_data);
+                    break;
+                case 2:
+                    option = bar_chart(chart_data);
+                    break;
+                case 3:
+                    option = radar_chart(chart_data);
+                    break;
+                case 4:
+                    option = pie_chart(chart_data);
+                    break;
+                case 5:
+                    option = funnel_chart(chart_data);
+                    break;
+
+            }
+
+            return option;
+        }
+        // 图表默认配置
+        function chart_config(option) {
+            option['grid']={};
+            if(option['series'][0]['type']==='line'){
+                option['title']['left']=40;
+                option['grid']['left']=40;
+                option['trigger']='axis';
+                option['toolbox']=
+                    {
+                        'show': true,
+                        'feature':
+                            {
+                                'magicType':{'show':true, 'type':['line', 'bar', 'stack', 'tiled']}
+                            },
+                        'restore':{'show':true},
+                        'saveAsImage':{'show':true},
+                        'top':'top',
+                        'right':160
+                    };
+                option['yAxis'] = [{'type': 'value'}]
+            }else {
+                return option
+            }
+            return option
+        }
+        // 筛选功能
+        function date_time_filter(chart_type, html_ele) {
+            var type;
+            switch (chart_type) {
+                case 0:
+                    type="month";
+                    break;
+                case 1:
+                    type="month";
+                    break;
+                case 2:
+                    type="month";
+                    break;
+                case 4:
+                    type="month";
+                    break;
+            }
+
+            laydate.render({
+                elem: html_ele,
+                format:'yyyyMM',
+                value:"201901"
+            });
+        }
+
+        // 图像大小自适应
+        $(function () {
+               window.onresize = function () {
+                   $.each(chart_resize, function (i,x) {
+                       x.resize();
+                   })
+               }
+        })
+
+
+
+
+    </script>
+
+{% endblock %}

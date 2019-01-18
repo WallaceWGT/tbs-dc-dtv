@@ -1,0 +1,394 @@
+{% extends 'public/base.html' %}
+{% csrf_token %}
+
+{% block page-content %}
+    <style>
+
+        h5{
+            display: inline-block;
+            margin-left: 15px;
+        }
+        hr{
+             margin-top: 10px;
+             margin-bottom: 10px;
+         }
+        .panel-body{
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        select{
+            padding: 20px;
+            display: inline-block;
+            margin-bottom: 13px;
+        }
+        .row{
+            margin-top: 10px;
+        }
+
+
+
+    </style>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile">
+                <div class="title-body">
+
+                    <div class="panel panel-default">
+                        <form action="" method="post">
+
+                            <div class="panel panel-body" id="report-info">
+
+                                <div class="row">
+                                    <label class="col-sm-1 control-label">{{ report_form_obj.visual_report_name.label }}</label>
+                                    <div class="col-sm-2">
+                                        <input type="text" name="vid" style="display: none" value="">
+                                        {{ report_form_obj.visual_report_name }}{{ report_form_obj.visual_report_name.errors.0 }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col-sm-1 control-label">{{ report_form_obj.is_down.label }}</label>
+                                    <div class="col-sm-2">
+                                        {{ report_form_obj.is_down }}{{ report_form_obj.is_down.errors.0 }}
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">{{ report_form_obj.online.label }}</label>
+                                    <div class="col-sm-2">
+                                        {{ report_form_obj.online }}{{ report_form_obj.online.errors.0 }}
+                                    </div>
+
+                                    <label class="col-sm-1 control-label">{{ report_form_obj.mid.label }}</label>
+                                    <div class="col-sm-2">
+                                        {{ report_form_obj.mid }}{{ report_form_obj.mid.errors.0 }}
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <button type="submit" style="float: right; overflow: auto" class="btn btn-info">提交保存</button>
+                                </div>
+
+                            </div>
+
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="../../static/public/plugins/common/jquery.min.js"></script>
+{#    <script>#}
+{##}
+{#        $(function () {#}
+{#            increase_chart_or_table();#}
+{#            submit_data();#}
+{#        });#}
+{##}
+{##}
+{#        function increase_chart_or_table() {#}
+{##}
+{#            // 初始化图形位置id,根据该id进行图表位置排序#}
+{#            var i = 0;#}
+{##}
+{#            // 添加图表html#}
+{#            $('.create-chart').click(function () {#}
+{#                var chart_hrml=#}
+{#                    "<form>"+#}
+{#                    "<div class=\"panel panel-body report-data-info\">"+#}
+{#                          "<div class=\"content-row\">"+#}
+{#                              "<div class=\"row\"><h5>图表属性</h5></div>"+#}
+{#                              "<hr>"+#}
+{#                              "<div>"+#}
+{##}
+{#                                  "<div class=\"row\">"+#}
+{#                                      "<label class=\"col-sm-1 control-label\">图表名:</label>"+#}
+{#                                      "<div class=\"col-sm-2\">"+#}
+{#                                          "<input type=\"text\" class=\"visual-region\" name=\"visual_region_id\" style=\"display: none\">"+#}
+{#                                          "<input type=\"text\" class=\"form-control \" name=\"cid\" style=\"display: none\">"+#}
+{#                                          "<input type=\"text\" class=\"form-control chart-name \" name=\"visual_chart_name\">"+#}
+{#                                      "</div>"+#}
+{#                                  "</div>"+#}
+{#                                  "<hr>"+#}
+{#                                  "<div class=\"row\">"+#}
+{#                                      "<label class=\"col-sm-1 control-label\">图形类型</label>"+#}
+{#                                      "<div class=\"col-sm-2\">"+#}
+{#                                          "<select class=\"form-control\" name=\"visual_chart_type\">"+#}
+{#                                              "<option value=\"1\">折线图</option>"+#}
+{#                                              "<option value=\"2\">柱形图</option>"+#}
+{#                                              "<option value=\"3\">饼图</option>"+#}
+{#                                              "<option value=\"4\">漏斗图</option>"+#}
+{#                                              "<option value=\"5\">地图</option>"+#}
+{#                                              "<option value=\"6\">雷达图</option>"+#}
+{#                                              "<option value=\"7\">散点图</option>"+#}
+{#                                              "<option value=\"8\">平行坐标系</option>"+#}
+{#                                          "</select>"+#}
+{#                                      "</div>"+#}
+{##}
+{#                                  "</div>"+#}
+{#                                  "<hr>"+#}
+{#                                  "<div class=\"row\">"+#}
+{#                                   "<label class=\"col-sm-1 control-label\">数据表</label>"+#}
+{#                                   "<div class=\"col-sm-2\">"+#}
+{#                                       "<input type=\"text\" class=\"form-control\" name=\"chart_source_name\">"+#}
+{#                                   "</div>"+#}
+{#                                  "</div>"+#}
+{#                                  "<hr>"+#}
+{#                                  "<div class=\"row\">"+#}
+{#                                      "<label class=\"col-sm-1 control-label\">过滤条件</label>"+#}
+{#                                      "<div class=\"col-sm-4\">"+#}
+{#                                          "<input type=\"text\" class=\"form-control\" name=\"chart_source_filter\">"+#}
+{#                                      "</div>"+#}
+{#                                  "</div>"+#}
+{#                                  "<div class=\"row\">"+#}
+{#                                      "<label class=\"col-sm-1 control-label\">图表结论</label>"+#}
+{#                                      "<div class=\"col-sm-4\">"+#}
+{#                                          "<textarea class=\"form-control\" name=\"visual_chart_explain\" placeholder=\"图表结论\">"+#}
+{#                                          "</textarea>"+#}
+{#                                      "</div>"+#}
+{#                                  "</div>"+#}
+{##}
+{#                            "<div class=\"ibox-title\" style=\"border: none;margin-top: 8px;\">"+#}
+{#                                "<h5>指标</h5>"+#}
+{#                                "<span class=\"btn btn-sm btn-primary m-t-n-xs add-item\" onclick=\"add_chart_quota(this)\" style=\"margin-left: 5px;\"><strong>新 增</strong></span>"+#}
+{#                            "</div>"+#}
+{#                            "<div class=\"ibox-content\">"+#}
+{#                                "<div class=\"form-group\">"+#}
+{##}
+{#                                "<div class=\"table-responsive\">"+#}
+{#                                    "<table class=\"table table-striped items_table\">"+#}
+{#                                        "<thead>"+#}
+{#                                        "<tr>"+#}
+{#                                            "<th>操作</th>"+#}
+{#                                            "<th>字段</th>"+#}
+{#                                            "<th>名称</th>"+#}
+{#                                            "<th>计算方式</th>"+#}
+{#                                            "<th>公式</th>"+#}
+{#                                            "<th>是否显示图形</th>"+#}
+{#                                            "<th>注释</th>"+#}
+{#                                        "</tr>"+#}
+{#                                        "</thead>"+#}
+{#                                        "<tbody>"+#}
+{##}
+{#                                        "</tbody>"+#}
+{#                                    "</table>"+#}
+{#                                "</div>"+#}
+{##}
+{#                            "</div>"+#}
+{#                            "</div>"+#}
+{##}
+{#                              "</div>"+#}
+{#                          "</div>"+#}
+{#                      "</div>"+#}
+{#                "</form>";#}
+{##}
+{#                $("#create-div").before(chart_hrml);#}
+{#                $($(".visual-region")[i]).attr('value', i);#}
+{#                i=i+1;#}
+{#            });#}
+{##}
+{#            // 添加表格html#}
+{#            $('.create-table').click(function () {#}
+{#                var html=#}
+{#                    "<form>"+#}
+{#                    "<div class=\"panel panel-body report-data-info\">"+#}
+{#                        "<div class=\"content-row\">"+#}
+{#                            "<div class=\"row\"><h5>表格属性</h5></div>"+#}
+{#                            "<hr>"+#}
+{#                            "<div>"+#}
+{##}
+{#                                "<div class=\"row\">"+#}
+{#                                    "<label class=\"col-sm-1 control-label\">表格名:</label>"+#}
+{#                                    "<div class=\"col-sm-2\">"+#}
+{#                                        "<input type=\"text\" class=\"visual-region\" name=\"vid\" style=\"display: none\">"+#}
+{#                                        "<input type=\"text\" name=\"visual_table_id\" style=\"display: none\">"+#}
+{#                                        "<input type=\"text\" class=\"form-control\" name=\"visual_table_name\">"+#}
+{#                                    "</div>"+#}
+{#                                "</div>"+#}
+{#                                "<hr>"+#}
+{#                                "<div class=\"row\">"+#}
+{#                                 "<label class=\"col-sm-1 control-label\">数据表</label>"+#}
+{#                                 "<div class=\"col-sm-2\">"+#}
+{#                                     "<input type=\"text\" class=\"form-control\" name=\"table_source_name\">"+#}
+{#                                 "</div>"+#}
+{#                                "</div>"+#}
+{#                                "<hr>"+#}
+{#                                "<div class=\"row\">"+#}
+{#                                    "<label class=\"col-sm-1 control-label\">过滤条件</label>"+#}
+{#                                    "<div class=\"col-sm-2\">"+#}
+{#                                        "<input type=\"text\" class=\"form-control\" name=\"table_source_filter\">"+#}
+{#                                    "</div>"+#}
+{#                                "</div>"+#}
+{#                                "<hr>"+#}
+{#                                "<div class=\"row\">"+#}
+{#                                    "<label class=\"col-sm-1 control-label\">表格结论</label>"+#}
+{#                                    "<div class=\"col-sm-4\">"+#}
+{#                                        "<textarea class=\"form-control\" name=\"visual_table_explain\" placeholder=\"图表结论\">"+#}
+{##}
+{#                                        "</textarea>"+#}
+{#                                    "</div>"+#}
+{#                                "</div>"+#}
+{#                                "<hr>"+#}
+{#                                   "<div class=\"ibox-title\" style=\"border: none;margin-top: 8px;\">"+#}
+{#                                "<h5>指标</h5>"+#}
+{#                                "<span class=\"btn btn-sm btn-primary m-t-n-xs add-item\" onclick=\"add_table_quota(this)\" style=\"margin-left: 5px;\"><strong>新 增</strong></span>"+#}
+{#                            "</div>"+#}
+{#                            "<div class=\"ibox-content\">"+#}
+{#                                "<div class=\"form-group\">"+#}
+{##}
+{#                                "<div class=\"table-responsive\">"+#}
+{#                                    "<table class=\"table table-striped items_table\">"+#}
+{#                                        "<thead>"+#}
+{#                                        "<tr>"+#}
+{#                                            "<th>操作</th>"+#}
+{#                                            "<th>字段</th>"+#}
+{#                                            "<th>名称</th>"+#}
+{#                                            "<th>计算方式</th>"+#}
+{#                                            "<th>公式</th>"+#}
+{#                                            "<th>显示格式</th>"+#}
+{#                                            "<th>是否排序</th>"+#}
+{#                                            "<th>注释</th>"+#}
+{#                                        "</tr>"+#}
+{#                                        "</thead>"+#}
+{#                                        "<tbody>"+#}
+{##}
+{#                                        "</tbody>"+#}
+{#                                    "</table>"+#}
+{#                                "</div>"+#}
+{##}
+{#                            "</div>"+#}
+{#                        "</div>"+#}
+{#                    "</div>"+#}
+{#                    "<hr>"+#}
+{#                "</form>";#}
+{##}
+{#                $("#create-div").before(html);#}
+{#                $($(".visual-region")[i]).attr('value', i);#}
+{#                i+=1;#}
+{#            })#}
+{##}
+{#        }#}
+{##}
+{#        // 添加chart字段指标#}
+{#        function add_chart_quota(th) {#}
+{#            var html = "<tr class=\"items_tr\">"+#}
+{#                        "<input type=\"hidden\" name=\"\" value=\"\">"+#}
+{#                        "<td>"+#}
+{#                            "<span class=\"label label-danger label-delete-it\" style=\"cursor: pointer;margin-right: 2px;\">删除</span>"+#}
+{#                        "</td>"+#}
+{#                        "<input class=\"form-control w100\" name=\"cid\" type=\"hidden\" value=\"\">"+#}
+{#                        "<td><input class=\"form-control w100\" name=\"chart_field_name\" type=\"text\" value=\"\"></td>"+#}
+{#                        "<td><input class=\"form-control w100\" name=\"chart_field_name_cn\" type=\"text\" value=\"\"></td>"+#}
+{#                        "<td>"+#}
+{#                            "<select class=\"form-control\" name=\"chart_method\">"+#}
+{#                                "<option value=\"0\" selected=\"\">sum</option>"+#}
+{#                                "<option value=\"1\">count</option>"+#}
+{#                                "<option value=\"2\">min</option>"+#}
+{#                                "<option value=\"3\">max</option>"+#}
+{#                                "<option value=\"4\">avg</option>"+#}
+{#                                "<option value=\"5\">null</option>"+#}
+{#                            "</select>"+#}
+{#                        "</td>"+#}
+{#                        "<td><input class=\"form-control w100\" name=\"chart_formula\" type=\"text\" value=\"\"></td>"+#}
+{#                        "<td>"+#}
+{#                            "<select class=\"form-control\" name=\"display_status\">"+#}
+{#                                "<option value=\"0\" selected=\"\">显示</option>"+#}
+{#                                "<option value=\"1\">不显示</option>"+#}
+{#                            "</select>"+#}
+{#                        "</td>"+#}
+{#                        "<td><input class=\"form-control\" name=\"chart_field_tips\" type=\"text\" value=\"\"></td>"+#}
+{#                    "</tr>";#}
+{#            $(th).parent().next().find('tbody').append(html)#}
+{#        }#}
+{##}
+{##}
+{#        // 添加table字段指标#}
+{#        function add_table_quota(th) {#}
+{#            var html = "<tr class=\"items_tr\">"+#}
+{#                        "<input type=\"hidden\" name=\"\" value=\"\">"+#}
+{#                        "<td>"+#}
+{#                            "<span class=\"label label-danger label-delete-it\" style=\"cursor: pointer;margin-right: 2px;\">删除</span>"+#}
+{#                        "</td>"+#}
+{#                        "<input class=\"form-control w100\" name=\"tid\" type=\"hidden\" value=\"\">"+#}
+{#                        "<td><input class=\"form-control w100\" name=\"table_field_name\" type=\"text\" value=\"\"></td>"+#}
+{#                        "<td><input class=\"form-control w100\" name=\"table_field_name_cn\" type=\"text\" value=\"\"></td>"+#}
+{#                        "<td>"+#}
+{#                            "<select class=\"form-control\" name=\"table_method\">"+#}
+{#                                "<option value=\"0\" selected=\"\">sum</option>"+#}
+{#                                "<option value=\"1\">count</option>"+#}
+{#                                "<option value=\"2\">min</option>"+#}
+{#                                "<option value=\"3\">max</option>"+#}
+{#                                "<option value=\"4\">avg</option>"+#}
+{#                                "<option value=\"5\">null</option>"+#}
+{#                            "</select>"+#}
+{#                        "</td>"+#}
+{#                        "<td><input class=\"form-control w100\" name=\"table_formula\" type=\"text\" value=\"\"></td>"+#}
+{#                        "<td><select class=\"form-control\" name=\"display_mode\">"+#}
+{#                            "<option value=\"0\" selected=\"\">默认</option>"+#}
+{#                            "<option value=\"1\">小数</option>"+#}
+{#                            "<option value=\"2\">百分比</option>"+#}
+{#                            "<option value=\"3\">千分位</option>"+#}
+{#                            "<option value=\"4\">日期</option>"+#}
+{#                            "</select>"+#}
+{#                        "</td>"+#}
+{#                        "<td>"+#}
+{#                            "<select class=\"form-control\" name=\"sort\">"+#}
+{#                                "<option value=\"0\" selected=\"\">不排序</option>"+#}
+{#                                "<option value=\"1\">正序</option>"+#}
+{#                                "<option value=\"2\">倒序</option>"+#}
+{#                            "</select>"+#}
+{#                        "</td>"+#}
+{#                        "<td><input class=\"form-control\" name=\"table_field_tips\" type=\"text\" value=\"\"></td>"+#}
+{#                    "</tr>";#}
+{##}
+{##}
+{#            $(th).parent().next().find('tbody').append(html)#}
+{##}
+{#        }#}
+{##}
+{#        // 对提交的报表数据进行加工处理, 便于后台解析#}
+{#        function submit_data() {#}
+{#            var data_list = [];#}
+{#            $('#data-submit').click(function () {#}
+{#                $.each($('body form'), function (i, x) {#}
+{#                    var send_data = {};#}
+{#                    var report_data = $(x).serializeArray();#}
+{##}
+{#                    $.each(report_data, function () {#}
+{#                        if(this.name in send_data){#}
+{#                            send_data[this.name]= send_data[this.name]+ "-" + this.value;#}
+{#                        }else {#}
+{#                            send_data[this.name] = this.value#}
+{#                        }#}
+{#                    });#}
+{##}
+{#                    data_list.push(send_data)#}
+{#                });#}
+{#                console.log(data_list);#}
+{#                send_data(JSON.stringify(data_list));#}
+{#                data_list=[]#}
+{#            });#}
+{#        }#}
+{##}
+{##}
+{#        function send_data(data) {#}
+{#            $.ajax({#}
+{#                type: "POST",#}
+{#                url: '/visual/report_setting',#}
+{#                data: {'data': data},#}
+{#                dataType: "JSON",#}
+{#                success:function () {#}
+{#                    console.log('aaa')#}
+{#                }#}
+{#            })#}
+{##}
+{##}
+{#        }#}
+{##}
+{##}
+{#    </script>#}
+
+
+{% endblock %}

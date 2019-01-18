@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>土拨鼠数据分析</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="../../static/public/css/main.css">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" href="../../static/public/plugins/font-anwesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../../static/public/plugins/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../../static/public/plugins/bootstrap/css/bootstrap-theme.min.css">
+
+
+        <style>
+            select.form-control:not([size]):not([multiple]) {
+            height: calc(2.0625rem + 10px);
+            }
+
+            .breadcrumb{
+                margin-bottom: 2px;
+            }
+            .treeview-item{
+                margin-left: 30px;
+            }
+            .child_menu_item{
+                background-color: #2a383e;
+                color: white;
+                display: inline-block;
+                padding-left: 40px
+            }
+            .block-config{
+                font-size: 15px;
+            }
+            .app-title{
+                margin-bottom: 7px;
+                padding-bottom: 8px;
+                padding-top: 8px;
+            }
+        </style>
+
+    </head>
+    {% load mytags %}
+    <body class="app sidebar-mini rtl">
+
+        {# 页面头部 #}
+        <header class="app-header"><a class="app-header__logo" href="index.html">土拨鼠数据分析</a>
+            <a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
+
+            <ul class="app-nav">
+
+                <li class="dropdown"><a href="" class="app-nav__item" data-toggle="dropdown">配置管理</a>
+                    <ul class="dropdown-menu-right dropdown-menu setting-menu">
+                        <li><a href="/visual/report_menu_setting/">菜单新增</a></li>
+                        <li><a href="/visual/report_setting/">报表新增</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a class="app-nav__item" href="#" data-toggle="dropdown" aria-label="Open Profile Menu"><i class="fa fa-user fa-lg"></i></a>
+                    <ul class="dropdown-menu settings-menu dropdown-menu-right">
+                        <li><a class="dropdown-item" href=""><i class="fa fa-sign-out fa-lg"></i>注销</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </header>
+
+
+        <aside class="app-sidebar">
+
+            <ul class="app-menu">
+                <li><a class="app-menu__item" href=""><i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">首页</span></a></li>
+                    <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-bar-chart-o"></i><span class="app-menu__label">数据分析</span><i class="treeview-indicator fa fa-angle-right"></i></a>
+                        <ul class="treeview-menu">
+                            {% for i in request.report_menu %}
+                                <li><a class="treeview-item" href="/">{{ i.menu_name }}</a>
+                                    <ul class="">
+                                        {% for i in i|get_report_title %}
+                                            <a class="child_menu_item" href="/visual/report_view/?vid={{ i.vid }}" vid="{{ i.vid }}">{{ i.visual_report_name }}</a>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+            </ul>
+        </aside>
+
+        {# 页面主体 #}
+        <main class="app-content">
+
+            {# 页面左边菜单栏 #}
+            {% block page-title %}
+
+            {% endblock %}
+
+
+            {# 页面右边主体 #}
+            {% block page-content %}
+
+            {% endblock %}
+
+        </main>
+
+
+
+
+        <script src="../../static/public/plugins/common/jquery.min.js"></script>
+        <script src="../../static/public/js/popper.min.js"></script>
+        <script src="../../static/public/plugins/bootstrap/js/bootstrap.min.js"></script>
+        <script src="../../static/public/js/main.js"></script>
+        <script src="../../static/public/js/pace.min.js"></script>
+        <script src="../../static/public/plugins/common/echarts.min.js"></script>
+        <script>
+            $(function () {
+                add_parm();
+            });
+
+            function GetQueryString(name) {
+                var reg = new RegExp("(^|&)"+name+"=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if(r !== null){
+                    return unescape(r[2]);
+                }
+            }
+
+            function add_parm() {
+                var config_ele = $('.block-config');
+                config_ele.attr('href', config_ele.attr('href')+"?vid="+ GetQueryString('vid'))
+            }
+
+        </script>
+
+
+  </body>
+
+</html>
